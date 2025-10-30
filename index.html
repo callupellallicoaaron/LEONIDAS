@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FERNANDA Y EDGAR</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #90EE90 100%);
+      font-family: 'Georgia', serif;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #restart-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff69b4, #d1477a);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    #restart-button:hover {
+      background: linear-gradient(135deg, #d1477a, #ff69b4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+    }
+
+    #restart-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      max-height: 800px;
+    }
+
+    .stem {
+      stroke: #2d5016;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    .leaf {
+      fill: #4a7c2c;
+      stroke: #2d5016;
+      stroke-width: 1.5;
+    }
+
+    .tulip-petal {
+      fill: #ff69b4;
+      stroke: #d1477a;
+      stroke-width: 2;
+    }
+
+    .tulip-center {
+      fill: #ffeb3b;
+    }
+
+    .flower-center {
+      fill: #ff8c00;
+    }
+
+    .flower-petal {
+      fill: #ffd700;
+      stroke: #ffb700;
+      stroke-width: 2;
+    }
+
+    .heart {
+      fill: #ff1744;
+      stroke: #c41c3b;
+      stroke-width: 2;
+    }
+
+    .names-text {
+      font-size: 48px;
+      font-weight: bold;
+      fill: #d81b60;
+      stroke: #ffffff;
+      stroke-width: 2;
+      paint-order: stroke;
+      font-family: 'Georgia', serif;
+      letter-spacing: 3px;
+    }
+
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="canvas-container"><button id="restart-button">🌸 Dibujar Flores</button>
+   <svg viewbox="0 0 1200 800" preserveaspectratio="xMidYMid meet"><!-- Tallos (se dibujan primero) --> <path id="stem1" class="stem" d="M 300 700 Q 300 600 300 400" /> <path id="stem2" class="stem" d="M 500 700 Q 500 600 500 450" /> <path id="stem3" class="stem" d="M 700 700 Q 700 600 700 420" /> <path id="stem4" class="stem" d="M 900 700 Q 900 600 900 480" /> <!-- Hojas --> <ellipse id="leaf1" class="leaf" cx="280" cy="550" rx="25" ry="50" transform="rotate(-30 280 550)" opacity="0" /> <ellipse id="leaf2" class="leaf" cx="320" cy="520" rx="25" ry="50" transform="rotate(30 320 520)" opacity="0" /> <ellipse id="leaf3" class="leaf" cx="480" cy="580" rx="25" ry="50" transform="rotate(-25 480 580)" opacity="0" /> <ellipse id="leaf4" class="leaf" cx="520" cy="560" rx="25" ry="50" transform="rotate(25 520 560)" opacity="0" /> <ellipse id="leaf5" class="leaf" cx="680" cy="540" rx="25" ry="50" transform="rotate(-35 680 540)" opacity="0" /> <ellipse id="leaf6" class="leaf" cx="720" cy="510" rx="25" ry="50" transform="rotate(35 720 510)" opacity="0" /> <ellipse id="leaf7" class="leaf" cx="880" cy="600" rx="25" ry="50" transform="rotate(-20 880 600)" opacity="0" /> <ellipse id="leaf8" class="leaf" cx="920" cy="580" rx="25" ry="50" transform="rotate(20 920 580)" opacity="0" /> <!-- Tulipán 1 --> <g id="tulip1" opacity="0">
+     <ellipse class="tulip-petal" cx="280" cy="380" rx="20" ry="40" transform="rotate(-20 280 380)" />
+     <ellipse class="tulip-petal" cx="300" cy="370" rx="20" ry="40" />
+     <ellipse class="tulip-petal" cx="320" cy="380" rx="20" ry="40" transform="rotate(20 320 380)" />
+     <ellipse class="tulip-center" cx="300" cy="390" rx="15" ry="10" />
+    </g> <!-- Flor amarilla 1 --> <g id="flower1" opacity="0">
+     <circle class="flower-petal" cx="500" cy="420" r="25" />
+     <circle class="flower-petal" cx="530" cy="440" r="25" />
+     <circle class="flower-petal" cx="530" cy="480" r="25" />
+     <circle class="flower-petal" cx="500" cy="500" r="25" />
+     <circle class="flower-petal" cx="470" cy="480" r="25" />
+     <circle class="flower-petal" cx="470" cy="440" r="25" />
+     <circle class="flower-center" cx="500" cy="460" r="20" />
+    </g> <!-- Tulipán 2 --> <g id="tulip2" opacity="0">
+     <ellipse class="tulip-petal" cx="680" cy="400" rx="20" ry="40" transform="rotate(-25 680 400)" />
+     <ellipse class="tulip-petal" cx="700" cy="390" rx="20" ry="40" />
+     <ellipse class="tulip-petal" cx="720" cy="400" rx="20" ry="40" transform="rotate(25 720 400)" />
+     <ellipse class="tulip-center" cx="700" cy="410" rx="15" ry="10" />
+    </g> <!-- Flor amarilla 2 --> <g id="flower2" opacity="0">
+     <circle class="flower-petal" cx="900" cy="450" r="25" />
+     <circle class="flower-petal" cx="930" cy="470" r="25" />
+     <circle class="flower-petal" cx="930" cy="510" r="25" />
+     <circle class="flower-petal" cx="900" cy="530" r="25" />
+     <circle class="flower-petal" cx="870" cy="510" r="25" />
+     <circle class="flower-petal" cx="870" cy="470" r="25" />
+     <circle class="flower-center" cx="900" cy="490" r="20" />
+    </g> <!-- Corazones --> <path id="heart1" class="heart" d="M 200 250 C 200 230 220 220 240 240 C 260 220 280 230 280 250 C 280 280 240 310 240 310 C 240 310 200 280 200 250 Z" opacity="0" /> <path id="heart2" class="heart" d="M 400 200 C 400 180 420 170 440 190 C 460 170 480 180 480 200 C 480 230 440 260 440 260 C 440 260 400 230 400 200 Z" opacity="0" /> <path id="heart3" class="heart" d="M 760 200 C 760 180 780 170 800 190 C 820 170 840 180 840 200 C 840 230 800 260 800 260 C 800 260 760 230 760 200 Z" opacity="0" /> <path id="heart4" class="heart" d="M 960 250 C 960 230 980 220 1000 240 C 1020 220 1040 230 1040 250 C 1040 280 1000 310 1000 310 C 1000 310 960 280 960 250 Z" opacity="0" /> <!-- Texto de nombres --> <text id="names" class="names-text" x="600" y="150" text-anchor="middle" opacity="0">
+     FERNANDA Y EDGAR
+    </text>
+   </svg>
+  </div>
+  <script>
+    const defaultConfig = {
+      names_text: "FERNANDA Y EDGAR",
+      primary_color: "#ff69b4",
+      secondary_color: "#ffd700",
+      text_color: "#d81b60",
+      background_start: "#87CEEB",
+      background_end: "#90EE90"
+    };
+
+    async function onConfigChange(config) {
+      const namesText = config.names_text || defaultConfig.names_text;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const backgroundStart = config.background_start || defaultConfig.background_start;
+      const backgroundEnd = config.background_end || defaultConfig.background_end;
+
+      document.getElementById('names').textContent = namesText;
+      
+      document.body.style.background = `linear-gradient(to bottom, ${backgroundStart} 0%, #E0F6FF 50%, ${backgroundEnd} 100%)`;
+      
+      const tulipPetals = document.querySelectorAll('.tulip-petal');
+      tulipPetals.forEach(petal => {
+        petal.style.fill = primaryColor;
+      });
+      
+      const flowerPetals = document.querySelectorAll('.flower-petal');
+      flowerPetals.forEach(petal => {
+        petal.style.fill = secondaryColor;
+      });
+      
+      document.getElementById('names').style.fill = textColor;
+    }
+
+    function resetAnimation() {
+      const stems = ['stem1', 'stem2', 'stem3', 'stem4'];
+      const leaves = ['leaf1', 'leaf2', 'leaf3', 'leaf4', 'leaf5', 'leaf6', 'leaf7', 'leaf8'];
+      const flowers = ['tulip1', 'flower1', 'tulip2', 'flower2'];
+      const hearts = ['heart1', 'heart2', 'heart3', 'heart4'];
+      
+      // Resetear todos los elementos
+      stems.forEach(stemId => {
+        const stem = document.getElementById(stemId);
+        stem.style.animation = 'none';
+        stem.style.strokeDasharray = '';
+        stem.style.strokeDashoffset = '';
+      });
+      
+      leaves.forEach(leafId => {
+        const leaf = document.getElementById(leafId);
+        leaf.style.animation = 'none';
+        leaf.style.opacity = '0';
+      });
+      
+      flowers.forEach(flowerId => {
+        const flower = document.getElementById(flowerId);
+        flower.style.animation = 'none';
+        flower.style.opacity = '0';
+      });
+      
+      hearts.forEach(heartId => {
+        const heart = document.getElementById(heartId);
+        heart.style.animation = 'none';
+        heart.style.opacity = '0';
+      });
+      
+      const names = document.getElementById('names');
+      names.style.animation = 'none';
+      names.style.opacity = '0';
+    }
+
+    function animateDrawing() {
+      const stems = ['stem1', 'stem2', 'stem3', 'stem4'];
+      const leaves = ['leaf1', 'leaf2', 'leaf3', 'leaf4', 'leaf5', 'leaf6', 'leaf7', 'leaf8'];
+      const flowers = ['tulip1', 'flower1', 'tulip2', 'flower2'];
+      const hearts = ['heart1', 'heart2', 'heart3', 'heart4'];
+      
+      stems.forEach((stemId, index) => {
+        const stem = document.getElementById(stemId);
+        const length = stem.getTotalLength();
+        stem.style.strokeDasharray = length;
+        stem.style.strokeDashoffset = length;
+        stem.style.animation = `draw 1s ease-out ${index * 0.3}s forwards`;
+      });
+      
+      leaves.forEach((leafId, index) => {
+        const leaf = document.getElementById(leafId);
+        setTimeout(() => {
+          leaf.style.animation = 'fadeIn 0.5s ease-out forwards';
+        }, 1200 + index * 150);
+      });
+      
+      flowers.forEach((flowerId, index) => {
+        const flower = document.getElementById(flowerId);
+        setTimeout(() => {
+          flower.style.animation = 'scaleIn 0.8s ease-out forwards';
+          flower.style.transformOrigin = 'center';
+        }, 2400 + index * 400);
+      });
+      
+      setTimeout(() => {
+        document.getElementById('names').style.animation = 'scaleIn 1s ease-out forwards';
+        document.getElementById('names').style.transformOrigin = 'center';
+      }, 4000);
+      
+      hearts.forEach((heartId, index) => {
+        const heart = document.getElementById(heartId);
+        setTimeout(() => {
+          heart.style.animation = 'scaleIn 0.6s ease-out forwards, heartbeat 1.5s ease-in-out 0.6s infinite';
+          heart.style.transformOrigin = 'center';
+        }, 4500 + index * 200);
+      });
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.background_start || defaultConfig.background_start,
+              set: (value) => {
+                config.background_start = value;
+                window.elementSdk.setConfig({ background_start: value });
+              }
+            },
+            {
+              get: () => config.background_end || defaultConfig.background_end,
+              set: (value) => {
+                config.background_end = value;
+                window.elementSdk.setConfig({ background_end: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["names_text", config.names_text || defaultConfig.names_text]
+        ])
+      });
+    }
+
+    window.addEventListener('load', () => {
+      // Inicializar en estado vacío - no animar automáticamente
+      resetAnimation();
+      
+      // Agregar evento al botón para iniciar animación
+      document.getElementById('restart-button').addEventListener('click', () => {
+        resetAnimation();
+        setTimeout(() => {
+          animateDrawing();
+        }, 100);
+      });
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'996bf5c8662a6df2',t:'MTc2MTgzODI5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
